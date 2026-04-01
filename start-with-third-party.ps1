@@ -1,4 +1,4 @@
-# 第三方模型启动脚本 (PowerShell)
+﻿# 第三方模型启动脚本 (PowerShell)
 # 配置您的 API 密钥和端点
 
 Write-Host "配置第三方模型环境..." -ForegroundColor Green

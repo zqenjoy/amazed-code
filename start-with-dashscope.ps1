@@ -1,4 +1,4 @@
-# 启动 Claude Code - 阿里百炼 (DashScope) 模式
+﻿# 启动 Claude Code - 阿里百炼 (DashScope) 模式
 # PowerShell 版本
 
 Write-Host "========================================" -ForegroundColor Cyan
