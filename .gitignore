@@ -16,3 +16,8 @@ coverage/
 .claude/
 .idea/
 .vscode/
+
+# 环境变量文件（包含敏感信息）
+.env
+.env.local
+.env.*.local

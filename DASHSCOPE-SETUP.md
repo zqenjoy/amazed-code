@@ -5,7 +5,7 @@
 本项目已配置为使用阿里百炼（DashScope）的 Coding Plan API 服务。
 
 - **API 端点**: `https://coding.dashscope.aliyuncs.com/apps/anthropic`
-- **API 密钥**: `sk-sp-f0677fbb2c74461fad851e34f89a0880`
+- **认证方式**: 通过 `.env` 文件配置 API Key（安全方式，不会提交到版本控制）
 - **接口协议**: Anthropic 兼容接口
 
 ## ✅ 已完成的修改
@@ -21,6 +21,20 @@
 
 ### 方式一：使用启动脚本（推荐）
 
+**首次使用前，需要先配置 `.env` 文件：**
+
+1. 复制示例配置文件：
+   ```bash
+   copy .env.example .env
+   ```
+
+2. 编辑 `.env` 文件，填入你的 API Key：
+   ```bash
+   ANTHROPIC_API_KEY=你的实际 API 密钥
+   ```
+
+3. 运行启动脚本：
+
 **Windows CMD:**
 ```batch
 start-with-dashscope.bat
@@ -35,21 +49,21 @@ start-with-dashscope.bat
 
 **Windows CMD:**
 ```batch
-set ANTHROPIC_API_KEY=sk-sp-f0677fbb2c74461fad851e34f89a0880
+set ANTHROPIC_API_KEY=你的 API_KEY
 set ANTHROPIC_BASE_URL=https://coding.dashscope.aliyuncs.com/apps/anthropic
 bun run dev
 ```
 
 **Windows PowerShell:**
 ```powershell
-$env:ANTHROPIC_API_KEY="sk-sp-f0677fbb2c74461fad851e34f89a0880"
+$env:ANTHROPIC_API_KEY="你的 API_KEY"
 $env:ANTHROPIC_BASE_URL="https://coding.dashscope.aliyuncs.com/apps/anthropic"
 bun run dev
 ```
 
 **Linux/macOS:**
 ```bash
-export ANTHROPIC_API_KEY=sk-sp-f0677fbb2c74461fad851e34f89a0880
+export ANTHROPIC_API_KEY=你的 API_KEY
 export ANTHROPIC_BASE_URL=https://coding.dashscope.aliyuncs.com/apps/anthropic
 bun run dev
 ```

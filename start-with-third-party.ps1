@@ -4,17 +4,31 @@
 Write-Host "配置第三方模型环境..." -ForegroundColor Green
 Write-Host ""
 
-# 设置 API 密钥和端点
-$env:ANTHROPIC_API_KEY = "your-api-key-here"
-$env:ANTHROPIC_BASE_URL = "https://your-api-endpoint.com"
+# 检查 .env 文件是否存在
+if (-not (Test-Path ".env")) {
+    Write-Host "[错误] 未找到 .env 文件！" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "请按照以下步骤操作：" -ForegroundColor Yellow
+    Write-Host "1. 复制 .env.example 文件为 .env" -ForegroundColor Yellow
+    Write-Host "2. 编辑 .env 文件，填入你的 ANTHROPIC_API_KEY 和 ANTHROPIC_BASE_URL" -ForegroundColor Yellow
+    Write-Host "3. 重新运行此脚本" -ForegroundColor Yellow
+    Write-Host ""
+    exit 1
+}
 
-# 设置默认模型（根据您的 API 支持的模型）
-# 这些模型将作为初始可选模型显示在/model 选择器中
-$env:ANTHROPIC_DEFAULT_SONNET_MODEL = "qwen3.5-plus"
-$env:ANTHROPIC_DEFAULT_HAIKU_MODEL = "kimi-k2.5"
-$env:ANTHROPIC_DEFAULT_OPUS_MODEL = "glm-5"
+# 从 .env 文件加载环境变量
+$envContent = Get-Content ".env"
+foreach ($line in $envContent) {
+    if ($line -match '^(\w+)=(.*)$') {
+        $key = $matches[1]
+        $value = $matches[2]
+        # 移除可能存在的首尾引号
+        $value = $value.Trim('"').Trim("'")
+        Set-Item -Path "env:$key" -Value $value
+    }
+}
 
-Write-Host "已设置以下环境变量：" -ForegroundColor Yellow
+Write-Host "已从 .env 文件加载配置：" -ForegroundColor Yellow
 Write-Host "- ANTHROPIC_API_KEY: [已配置]" -ForegroundColor Yellow
 Write-Host "- ANTHROPIC_BASE_URL: $env:ANTHROPIC_BASE_URL" -ForegroundColor Yellow
 Write-Host "- ANTHROPIC_DEFAULT_SONNET_MODEL: $env:ANTHROPIC_DEFAULT_SONNET_MODEL" -ForegroundColor Yellow
