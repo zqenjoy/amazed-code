@@ -32,6 +32,12 @@ import {
 } from './model.js'
 import { has1mContext } from '../context.js'
 import { getGlobalConfig } from '../config.js'
+import {
+  getThirdPartyModels,
+  isThirdPartyModel,
+  getThirdPartyModelName,
+  getThirdPartyModelDescription,
+} from './thirdPartyModels.js'
 
 // @[MODEL LAUNCH]: Update all the available and default model option strings below.
 
@@ -341,7 +347,47 @@ function getModelOptionsBase(fastMode = false): ModelOption[] {
     return payg1POptions
   }
 
-  // PAYG 3P: Default (Sonnet 4.5) + Sonnet (3P custom) or Sonnet 4.6/1M + Opus (3P custom) or Opus 4.1/Opus 4.6/Opus1M + Haiku + Opus 4.1
+  // PAYG 3P: Check if using third-party models (non-Claude)
+  const thirdPartyModels = getThirdPartyModels()
+  const hasCustomModels =
+    process.env.ANTHROPIC_DEFAULT_SONNET_MODEL ||
+    process.env.ANTHROPIC_DEFAULT_OPUS_MODEL ||
+    process.env.ANTHROPIC_DEFAULT_HAIKU_MODEL
+
+  // If third-party models are configured, use them instead of Claude models
+  if (hasCustomModels && thirdPartyModels.length > 0) {
+    const thirdPartyOptions: ModelOption[] = [getDefaultOptionForUser(fastMode)]
+
+    // Add all configured third-party models
+    for (const model of thirdPartyModels) {
+      thirdPartyOptions.push({
+        value: model.id,
+        label: model.name,
+        description: model.description,
+        descriptionForModel: `${model.description} (${model.id})`,
+      })
+    }
+
+    // Also add custom configured models from environment variables
+    const customSonnet = getCustomSonnetOption()
+    if (customSonnet !== undefined && !thirdPartyOptions.some(opt => opt.value === customSonnet.value)) {
+      thirdPartyOptions.push(customSonnet)
+    }
+
+    const customOpus = getCustomOpusOption()
+    if (customOpus !== undefined && !thirdPartyOptions.some(opt => opt.value === customOpus.value)) {
+      thirdPartyOptions.push(customOpus)
+    }
+
+    const customHaiku = getCustomHaikuOption()
+    if (customHaiku !== undefined && !thirdPartyOptions.some(opt => opt.value === customHaiku.value)) {
+      thirdPartyOptions.push(customHaiku)
+    }
+
+    return thirdPartyOptions
+  }
+
+  // Original 3P logic for Claude-compatible APIs
   const payg3pOptions = [getDefaultOptionForUser(fastMode)]
 
   const customSonnet = getCustomSonnetOption()

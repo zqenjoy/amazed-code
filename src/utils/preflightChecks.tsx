@@ -9,6 +9,12 @@ import { Box, Text } from '../ink.js';
 import { getSSLErrorHint } from '../services/api/errorUtils.js';
 import { getUserAgent } from './http.js';
 import { logError } from './log.js';
+
+// Type for Node.js errno exceptions
+interface ErrnoException extends Error {
+  code?: string;
+}
+
 export interface PreflightCheckResult {
   success: boolean;
   error?: string;
@@ -18,6 +24,19 @@ async function checkEndpoints(): Promise<PreflightCheckResult> {
   try {
     const oauthConfig = getOauthConfig();
     const tokenUrl = new URL(oauthConfig.TOKEN_URL);
+    
+    // Skip preflight checks for custom/third-party API endpoints (e.g., Alibaba Cloud DashScope)
+    // These endpoints may not support the standard /api/hello endpoint and have different auth
+    const baseUrl = oauthConfig.BASE_API_URL;
+    const isCustomEndpoint =
+      !baseUrl.includes('api.anthropic.com') &&
+      !baseUrl.includes('api-staging.anthropic.com');
+    
+    if (isCustomEndpoint) {
+      // Skip connectivity check for custom endpoints to avoid false positives
+      return { success: true };
+    }
+    
     const endpoints = [`${oauthConfig.BASE_API_URL}/api/hello`, `${tokenUrl.origin}/v1/oauth/hello`];
     const checkEndpoint = async (url: string): Promise<PreflightCheckResult> => {
       try {

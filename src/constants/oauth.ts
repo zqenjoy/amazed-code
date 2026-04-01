@@ -81,8 +81,9 @@ type OauthConfig = {
 }
 
 // Production OAuth configuration - Used in normal operation
+// Modified for Alibaba Cloud (DashScope) Coding Plan
 const PROD_OAUTH_CONFIG = {
-  BASE_API_URL: 'https://api.anthropic.com',
+  BASE_API_URL: 'https://coding.dashscope.aliyuncs.com/apps/anthropic',
   CONSOLE_AUTHORIZE_URL: 'https://platform.claude.com/oauth/authorize',
   // Bounces through claude.com/cai/* so CLI sign-ins connect to claude.com
   // visits for attribution. 307s to claude.ai/oauth/authorize in two hops.
@@ -176,10 +177,12 @@ function getLocalOauthConfig(): OauthConfig {
 // Allowed base URLs for CLAUDE_CODE_CUSTOM_OAUTH_URL override.
 // Only FedStart/PubSec deployments are permitted to prevent OAuth tokens
 // from being sent to arbitrary endpoints.
+// Added Alibaba Cloud (DashScope) Coding Plan endpoint.
 const ALLOWED_OAUTH_BASE_URLS = [
   'https://beacon.claude-ai.staging.ant.dev',
   'https://claude.fedstart.com',
   'https://claude-staging.fedstart.com',
+  'https://coding.dashscope.aliyuncs.com/apps/anthropic',
 ]
 
 // Default to prod config, override with test/staging if enabled

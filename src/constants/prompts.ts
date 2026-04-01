@@ -118,10 +118,11 @@ export const SYSTEM_PROMPT_DYNAMIC_BOUNDARY =
 const FRONTIER_MODEL_NAME = 'Claude Opus 4.6'
 
 // @[MODEL LAUNCH]: Update the model family IDs below to the latest in each tier.
+// Note: These are defaults for first-party API. Third-party APIs may override via environment variables.
 const CLAUDE_4_5_OR_4_6_MODEL_IDS = {
-  opus: 'claude-opus-4-6',
-  sonnet: 'claude-sonnet-4-6',
-  haiku: 'claude-haiku-4-5-20251001',
+  opus: process.env.ANTHROPIC_DEFAULT_OPUS_MODEL || 'claude-opus-4-6',
+  sonnet: process.env.ANTHROPIC_DEFAULT_SONNET_MODEL || 'claude-sonnet-4-6',
+  haiku: process.env.ANTHROPIC_DEFAULT_HAIKU_MODEL || 'claude-haiku-4-5-20251001',
 }
 
 function getHooksSection(): string {

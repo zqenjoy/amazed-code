@@ -133,6 +133,23 @@ export function getDefaultHaikuModel(): ModelName {
     return process.env.ANTHROPIC_DEFAULT_HAIKU_MODEL
   }
 
+  // For Alibaba Cloud DashScope or other third-party APIs that don't support Claude models,
+  // check if the API supports the standard Claude model first
+  if (
+    process.env.ANTHROPIC_BASE_URL?.includes('coding.dashscope.aliyuncs.com')
+  ) {
+    // DashScope may not support the latest Haiku 4.5, fall back to 3.5 Haiku
+    // But if that's also not supported, the API call will fail with a clear error
+    return 'claude-3-5-haiku-20241022'
+  }
+
+  // For other third-party providers, try Haiku 4.5 first
+  // If it's not supported, the API will return an error and users can set
+  // ANTHROPIC_DEFAULT_HAIKU_MODEL environment variable to override
+  if (getAPIProvider() !== 'firstParty') {
+    return getModelStrings().haiku45
+  }
+
   // Haiku 4.5 is available on all platforms (first-party, Foundry, Bedrock, Vertex)
   return getModelStrings().haiku45
 }

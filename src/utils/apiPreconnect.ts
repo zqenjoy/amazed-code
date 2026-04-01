@@ -59,6 +59,17 @@ export function preconnectAnthropicApi(): void {
   const baseUrl =
     process.env.ANTHROPIC_BASE_URL || getOauthConfig().BASE_API_URL
 
+  // Skip preconnect for custom/third-party API endpoints (e.g., Alibaba Cloud DashScope)
+  // These endpoints may not support anonymous HEAD requests and require specific auth
+  const isCustomEndpoint =
+    process.env.ANTHROPIC_BASE_URL &&
+    !baseUrl.includes('api.anthropic.com') &&
+    !baseUrl.includes('api-staging.anthropic.com')
+  
+  if (isCustomEndpoint) {
+    return
+  }
+
   // Fire and forget. HEAD means no response body — the connection is eligible
   // for keep-alive pool reuse immediately after headers arrive. 10s timeout
   // so a slow network doesn't hang the process; abort is fine since the real
